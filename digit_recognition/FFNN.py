@@ -1,9 +1,9 @@
 import torch as tc
+from datetime import datetime
 from typing import Callable
 from torch.utils.data import DataLoader, Dataset
 from typing import Callable
-from digit_recognition.ImageDataset import ImageDataset
-from digit_recognition.images.data import get_img_data, get_image_path
+
 # python -m digit_recognition.FFNN
 
 class ActivationFunction:
@@ -57,20 +57,26 @@ class LossFunction:
     @staticmethod 
     def softmax_cross_entropy(
         X: tc.Tensor, 
-        Y: tc.Tensor
+        Y: tc.Tensor,
+        class_weight: tc.Tensor
     ):
         """Softmax cross-entropy loss function
 
         Args:
             X (tc.Tensor): (samples, ouputs) = (m, n)
             Y (tc.Tensor): (samples, labels) = (m,)
+            class_weight (tc.Tensor) : (m, )
         """
+        if(class_weight == None):
+            class_weight = tc.ones(tc.max(Y).item() + 1)
+        
         max_X = tc.max(X, dim=1, keepdim=True)[0]
         Z = X - max_X
         sum = tc.sum(tc.exp(Z), dim=1, keepdim=True)
         s = X.shape[0]
         eps = 1e-12
-        return -tc.sum(Z[tc.arange(s), Y] - tc.log(sum + eps).flatten()) / s
+        probs = Z[tc.arange(s), Y] - tc.log(sum + eps).flatten()
+        return -tc.sum(class_weight[Y] * probs) / s
         
 class NeuralNetwork:
     def __init__(
@@ -89,7 +95,7 @@ class NeuralNetwork:
         self._W: list[tc.Tensor] = []
         self._B: list[tc.Tensor] = []
         self._f: list[Callable[[tc.Tensor], tc.Tensor]] = []
-        self._loss_func: Callable[[tc.Tensor, tc.Tensor], tc.Tensor] = loss_func
+        self._loss_func: Callable[[tc.Tensor, tc.Tensor, tc.Tensor], tc.Tensor] = loss_func
         self._output_func = self._output_func = output_func if output_func is not None else (lambda x: x)
         
         for i in range(len(layers)):
@@ -112,6 +118,7 @@ class NeuralNetwork:
         batch_size = 64,
         epoch = 10, 
         alpha = 0.1, 
+        class_weight: tc.Tensor = None
     ):
         """Training function
 
@@ -128,18 +135,20 @@ class NeuralNetwork:
         L0 = len(W)
         
         for _ in range(epoch):
-            batches = DataLoader(train_data, batch_size, True)
+            start = datetime.now()
+            batches = DataLoader(train_data, batch_size, True, num_workers=4)
             batch: tuple[tc.Tensor, tc.Tensor]
+            loss_print = None
             for batch in batches:
                 A_pre, label = batch
                 #print(f"A[0] = {A_pre}")
                 for i in range(L0):
                     A_pre = f[i](A_pre @ W[i].T + B[i])
                     # print(f"A[{i + 1}] = {A_pre}")
-                    
-                loss = loss_func(A_pre, label)
+                
+                loss = loss_func(A_pre, label, class_weight)
+                loss_print = loss
                 loss.backward()
-                print(f"Loss : {loss}")
                 with tc.no_grad():
                     for i in range(L0):
                         # print(f"{i} : {W[i].grad}")
@@ -147,8 +156,8 @@ class NeuralNetwork:
                         self._B[i].sub_(alpha * self._B[i].grad)
                         W[i].grad.zero_()
                         B[i].grad.zero_()
-            # alpha += 0.00001
-                    
+            end = datetime.now()
+            print(f"Time : {end - start} -- Loss : {loss_print}")
     def predict(self, X: tc.Tensor):
         W = self._W
         B = self._B
@@ -161,28 +170,3 @@ class NeuralNetwork:
             for i in range(L0):
                 A = f[i](A @ W[i].T + B[i])
         return self._output_func(A)
-
-nn = NeuralNetwork(
-    layers=[
-        (600, 10000, ActivationFunction.relu),
-        (200, 600, ActivationFunction.relu),
-        (10, 200, ActivationFunction.copy)
-    ], 
-    loss_func=LossFunction.softmax_cross_entropy,
-    output_func=ActivationFunction.softmax
-)
-
-img_dataset = ImageDataset(
-    img_data=get_img_data(), 
-    img_encoder=ImageDataset.white_black_encoder, 
-    flatten=True
-)
-
-nn.train(img_dataset,epoch=10, alpha=0.1, batch_size=100)
-
-for i in range(0, 10):
-    res = nn.predict(ImageDataset.img_to_tensor(get_image_path(f"{i}", 10), ImageDataset.white_black_encoder).reshape(1, 10000))[0].tolist()
-    max_prob = max(res)
-    print(f"Number : {res.index(max_prob)} - {max_prob}")
-    print(f"Prob : {res}")
-

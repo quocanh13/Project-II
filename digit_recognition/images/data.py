@@ -26,3 +26,4 @@ def get_img_data() -> list[tuple[str, int]]:
 
 def get_image_path(type : str, index : int) -> Image:
     return f"./digit_recognition/images/images_{type}/{type}_{index}.png"
+
