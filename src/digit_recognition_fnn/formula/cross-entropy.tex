@@ -1,0 +1,21 @@
+\documentclass{article}
+
+\begin{document}
+    \[
+        L = \sum_{i}\ln\left(
+            \frac{e^{z_i}}{\sum_{j}e^{z_j}}
+        \right) = 
+        \sum_{i}\left(
+            z_i - \ln\left(\sum_{j}e^{z_j}\right)
+        \right)
+    \]
+    Let:
+    \[
+        m = max(z_j)
+    \]
+    \[
+        \Rightarrow L = \sum_{i}\left(
+            z_i - m - \ln\left(\sum_{j}e^{z_j - m}\right)
+        \right)
+    \]
+\end{document}
