@@ -9,3 +9,8 @@ __pycache__/
 *.tiff
 *.tif
 *.zip
+*.pth
+dataset
+dataset_zip
+.env
+kaggle.ipynb

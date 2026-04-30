@@ -1,36 +1,52 @@
 import torch as tc
 import torchvision
-from PIL import Image
-from torch.utils.data import DataLoader
-import torchvision.transforms as tf
-from torchvision.models.detection import FasterRCNN
-from torchvision.models.detection.rpn import AnchorGenerator
-from datetime import datetime
-# python -m face_detection.faster_rcnn
+import torch.nn as nn
+from src.face_detection.backbone import BackboneVGG16, BackboneMiniVGG16
+from torchvision.models.detection import FasterRCNN as TorchFasterRCNN
+from torchvision.models.detection.rpn import AnchorGenerator   
+    
+class FasterRCNN(nn.Module):
+    class PARAM:
+        class FACE_DETECTION:
+            PARAMS = "./params/face_detection/params.pth"
+    
+    def __init__(
+        self,
+        backbone=None,
+        anchor_generator=None,
+        roi_pooler=None
+    ):
+        super().__init__()
 
-vgg16 = torchvision.models.vgg16(weights=torchvision.models.VGG16_Weights.IMAGENET1K_V1).features
-vgg16.named_children()[0:24]
+        if backbone is None:
+            backbone = BackboneVGG16(featmap_list=['c2', 'c3', 'c4', 'c5'])
 
-vgg16.out_channels = 512
+        if anchor_generator is None:
+            anchor_generator = AnchorGenerator(
+                sizes=((150,), (300,), (500,), (800,)),
+                aspect_ratios=((1.0,),) * 4
+            )
 
-anchor_generator = AnchorGenerator()
-roi_pooler = torchvision.ops.MultiScaleRoIAlign(
-    featmap_names=['0'], 
-    output_size=7, 
-    sampling_ratio=2
-)
-faster_rcnn = FasterRCNN(
-    backbone=vgg16,
-    rpn_anchor_generator=anchor_generator,
-    box_roi_pool=roi_pooler,
-    num_classes=2
-)
-faster_rcnn = faster_rcnn.eval()
-transformer = tf.Compose([
-    tf.Resize((224, 224)),
-    tf.ToTensor()
-])
-# with Image.open("./face_recognition/images/test/face/5.png") as img:
-#     img = transformer(img)
-#     print(faster_rcnn([img]))
-
+        if roi_pooler is None:
+            roi_pooler = torchvision.ops.MultiScaleRoIAlign(
+                featmap_names=['c2', 'c3', 'c4', 'c5'],
+                output_size=7,
+                sampling_ratio=2
+            )
+        super().__init__()
+        self.model = TorchFasterRCNN(
+            backbone=backbone,
+            rpn_anchor_generator=anchor_generator,
+            box_roi_pool=roi_pooler,
+            num_classes=2,
+            rpn_post_nms_top_n_train=3,
+            rpn_pre_nms_top_n_train=5
+        )
+    
+    def forward(
+        self,
+        images: list[tc.Tensor],
+        targets: list[dict] = None
+    ):
+        return self.model(images, targets)
+        
