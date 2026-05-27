@@ -1,6 +1,6 @@
-PWD d:\Desktop\Project II\formula
+PWD d:\Desktop\Project II\src\digit_recognition_fnn\formula
 INPUT C:\Users\quocanh\AppData\Local\MiKTeX\miktex\data\le\pdftex\pdflatex.fmt
-INPUT d:\Desktop\Project II\formula\backpropagation.tex
+INPUT d:\Desktop\Project II\src\digit_recognition_fnn\formula\backpropagation.tex
 OUTPUT backpropagation.log
 INPUT C:\Users\quocanh\AppData\Local\Programs\MiKTeX\tex\latex\base\article.cls
 INPUT C:\Users\quocanh\AppData\Local\Programs\MiKTeX\tex\latex\base\article.cls

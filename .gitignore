@@ -10,7 +10,9 @@ __pycache__/
 *.tif
 *.zip
 *.pth
-dataset
-dataset_zip
+/dataset
+/dataset_zip
+/.vscode
+/_params
 .env
 kaggle.ipynb

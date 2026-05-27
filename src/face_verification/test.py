@@ -1,51 +1,32 @@
-import json
-import random
-import torch as tc
-import torch.nn as nn
-import torchvision.transforms as tf
-from torchvision.transforms.functional import to_pil_image
+import argparse
 from PIL import Image
-from src.face_verification.FaceEmbedder import FaceEmbedder
+from src.face_verification import FaceVerification
+from src.utils import *
 # python -m src.face_verification.test
+parser = argparse.ArgumentParser()
+parser.add_argument("-fd", "--face_detection", type=str, default="resnet34")
+parser.add_argument("-fl", "--face_landmark", type=str, default="resnet34")
+parser.add_argument("-fe", "--face_embedder", type=str, default="resnet34")
+args = parser.parse_args()
 
-with open("./src/face_verification/data/info.json", "r") as file:
-    infos = json.load(file)
+face_detection = FaceDetectionConfig(algorithm="faster-rcnn", backbone=args.face_detection, dataset="wider_face")
+face_landmark = FaceLandmarkConfig(backbone=args.face_landmark)
+face_embedder = FaceLandmarkConfig(backbone=args.face_embedder)
+face_verification = FaceVerification(
+    face_detection = FaceDetectionFactory.create(face_detection),
+    face_landmark=FaceLandmarkFactory.create(face_landmark),
+    face_embedder=FaceEmbedderFactory.create(face_embedder)
+)
 
-device = tc.device("cuda" if tc.cuda.is_available() else "cpu")
-transformer = tf.Compose([
-    tf.Resize(120),
-    tf.CenterCrop(112),
-    tf.ToTensor(),
-    # tf.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
-])
-
-def get_img(path):
-    with Image.open(path).convert("RGB") as img:
-        img: tc.Tensor = transformer(img)
-        _img = to_pil_image(img)
-        _img.show()
-        img = img.unsqueeze(0)
-        return img.to(device)
+for i in range(1):
+    for j in range(1):
+        with Image.open(f"./dataset/football_player/nhat/002.png").convert("RGB") as image:
+            image_1 = image
+        with Image.open(f"./dataset/football_player/nhat/003.png").convert("RGB") as image:
+            image_2 = image
+        print(face_verification.verify(image_1, image_2))
+# with Image.open(f"./src/face_verification/1.png").convert("RGB") as image:
+# # with Image.open(f"./dataset/football_player/neymar/001.png").convert("RGB") as image:
+#     landmark = face_verification.face_landmark.detect(image=image)
+#     print(face_verification.is_frontal(image=image, landmark=landmark))
     
-# face_embedder = FaceEmbedder().to(device)
-# face_embedder.eval()
-# face_embedder.features_layer.face_features.load_state_dict(tc.load("./src/face_verification/params/face_features.pth"), strict=False)
-# face_embedder.linear_layer.load_state_dict(tc.load("./src/face_verification/params/linear.pth"))
-
-def test(num: int = 3):
-    infos_len = len(infos)
-    num = min(num, len(infos))
-    for _ in range(num):
-        a = random.randint(0, infos_len - 1)
-        b = random.randint(0, infos_len - 1)
-        info_a = infos[a]
-        info_b = infos[b]
-        name_a = info_a["name"]
-        name_b = info_b["name"]
-        img_a = get_img(info_a["path"])
-        img_b = get_img(info_b["path"])
-        # print(f"{name_a} -- {name_b} -- {face_embedder.distance(img_a, img_b)}")
-        
-test()
-    
-

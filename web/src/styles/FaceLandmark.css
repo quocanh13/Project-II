@@ -1,0 +1,324 @@
+/* Light Theme Face Landmark */
+
+.face-landmark {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 24px 16px; /* Giảm padding vùng container chính */
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    background: #f8f9fa;
+    min-height: 100vh;
+    box-sizing: border-box;
+}
+
+.face-landmark-title {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.face-landmark-title h1 {
+    font-size: 32px;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin: 0;
+}
+
+.face-landmark-title h1 span {
+    color: #3b82f6;
+}
+
+.face-landmark-title-badge {
+    background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+    color: white;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Layout */
+.face-landmark-content {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+    margin-bottom: 24px;
+}
+
+/* Add Image Section */
+.landmark-image-wrapper,
+.landmark-result-wrapper {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.landmark-image-card,
+.landmark-result-card,
+.landmark-card {
+    background: white;
+    border-radius: 16px;
+    padding: 20px; /* Giảm padding thẻ card bên trong */
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    border: 1px solid #e5e7eb;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+}
+
+.landmark-image-label,
+.landmark-result-label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 16px;
+}
+
+.landmark-image-zone,
+.landmark-result-zone {
+    position: relative;
+    border: 2px dashed #d1d5db;
+    border-radius: 12px;
+    height: 450px; /* Cố định chiều cao vùng chứa hình ảnh */
+    max-height: 450px; /* Ngăn chặn khung phình to khi up ảnh phân giải lớn */
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: #f9fafb;
+    overflow: hidden;
+}
+
+.landmark-image-zone:hover {
+    border-color: #3b82f6;
+    background: #eff6ff;
+}
+
+.landmark-image-zone.has-image {
+    border-style: solid;
+    border-color: #3b82f6;
+    background: white;
+}
+
+.landmark-image-placeholder {
+    text-align: center;
+    padding: 20px;
+}
+
+.landmark-image-placeholder-icon {
+    width: 64px;
+    height: 64px;
+    margin-bottom: 16px;
+    opacity: 0.5;
+}
+
+.landmark-image-placeholder-text {
+    color: #6b7280;
+    font-size: 14px;
+    margin: 0;
+}
+
+.landmark-image-placeholder-text strong {
+    color: #3b82f6;
+    font-weight: 600;
+}
+
+.landmark-image-input {
+    display: none;
+}
+
+.landmark-image-preview {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain; /* Ảnh gốc thu nhỏ vừa khung và giữ nguyên tỷ lệ */
+    display: block;
+}
+
+.landmark-image-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(59, 130, 246, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.landmark-image-zone:hover .landmark-image-overlay {
+    opacity: 1;
+}
+
+.landmark-image-overlay-text {
+    color: white;
+    font-weight: 600;
+    font-size: 16px;
+}
+
+/* Result Image Section */
+.landmark-result-zone {
+    cursor: default;
+    background: white;
+}
+
+.landmark-result-zone.has-result {
+    border-color: #10b981;
+    border-style: solid;
+}
+
+.landmark-result-canvas {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain; /* Đảm bảo canvas chứa landmark hoạt động chuẩn xác theo tỉ lệ */
+    display: block;
+}
+
+.landmark-result-placeholder {
+    color: #9ca3af;
+    font-size: 14px;
+    text-align: center;
+}
+
+/* Landmark Panel */
+.landmark-panel {
+    display: flex;
+    flex-direction: column;
+}
+
+.landmark-card {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    height: 100%;
+}
+
+/* Landmark Controls */
+.landmark-controls {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); 
+    gap: 20px;
+}
+
+.landmark-control-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.landmark-control-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #374151;
+    letter-spacing: 0.3px;
+}
+
+.landmark-control-select,
+.landmark-control-input {
+    width: 100%;
+    padding: 12px 16px;
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #1f2937;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    transition: all 0.2s ease;
+    outline: none;
+    box-sizing: border-box;
+}
+
+.landmark-control-select:hover,
+.landmark-control-input:hover {
+    border-color: #d1d5db;
+    background: #ffffff;
+}
+
+.landmark-control-select:focus,
+.landmark-control-input:focus {
+    border-color: #3b82f6;
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.landmark-control-select {
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236b7280' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 36px;
+}
+
+.landmark-control-input[type="number"] {
+    -moz-appearance: textfield;
+}
+
+.landmark-control-input::-webkit-outer-spin-button,
+.landmark-control-input::-webkit-inner-spin-button {
+    margin: 0;
+}
+
+.landmark-detect-button {
+    width: 100%;
+    padding: 16px;
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(59, 130, 246, 0.2);
+}
+
+.landmark-detect-button:hover {
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    box-shadow: 0 6px 12px rgba(59, 130, 246, 0.3);
+    transform: translateY(-2px);
+}
+
+.landmark-detect-button:active {
+    transform: translateY(0);
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+    .face-landmark-content {
+        grid-template-columns: 1fr;
+    }
+    .landmark-image-zone,
+    .landmark-result-zone {
+        height: 400px;
+    }
+}
+
+@media (max-width: 768px) {
+    .face-landmark {
+        padding: 16px 12px;
+    }
+    
+    .face-landmark-title h1 {
+        font-size: 26px;
+    }
+
+    .landmark-image-zone,
+    .landmark-result-zone {
+        height: 320px;
+    }
+
+    .landmark-controls {
+        grid-template-columns: 1fr;
+    }
+}

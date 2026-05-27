@@ -1,5 +1,5 @@
 # Fdb version 4
-["pdflatex"] 1774686174.63424 "d:/Desktop/Project II/formula/backpropagation.tex" "backpropagation.pdf" "backpropagation" 1774686175.79858 0
+["pdflatex"] 1779266499.72475 "d:/Desktop/Project II/src/digit_recognition_fnn/formula/backpropagation.tex" "backpropagation.pdf" "backpropagation" 1779266500.34151 0
   "C:/Users/quocanh/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map" 1773124604 88371 b965f57369ed322039596060d18f4416 ""
   "C:/Users/quocanh/AppData/Local/MiKTeX/miktex/data/le/pdftex/pdflatex.fmt" 1771934977 13334455 feb840927adf552d0648e6efd77639f0 ""
   "C:/Users/quocanh/AppData/Local/Programs/MiKTeX/fonts/tfm/public/amsfonts/cmextra/cmex7.tfm" 1233951848 1004 54797486969f23fa377b128694d548df ""
@@ -39,9 +39,9 @@
   "C:/Users/quocanh/AppData/Local/Programs/MiKTeX/tex/latex/base/inputenc.sty" 1761900684 5048 0270515b828149155424600fd2d58ac5 ""
   "C:/Users/quocanh/AppData/Local/Programs/MiKTeX/tex/latex/base/size10.clo" 1761900684 8448 686612a86f0e04f41ea577f5ec7e83d8 ""
   "C:/Users/quocanh/AppData/Local/Programs/MiKTeX/tex/latex/l3backend/l3backend-pdftex.def" 1761202581 30662 bfd6e864f4ffc5018b0e2b6260c3181c ""
-  "backpropagation.aux" 1774686175 33 cd8a9e253be16178be412705367a589a "pdflatex"
-  "backpropagation.tex" 1773933301 23772 773238759526b2c1b5a670ce5b601bb1 ""
-  "d:/Desktop/Project II/formula/backpropagation.tex" 1773933301 23772 773238759526b2c1b5a670ce5b601bb1 ""
+  "backpropagation.aux" 1779266500 33 cd8a9e253be16178be412705367a589a "pdflatex"
+  "backpropagation.tex" 1779266464 23772 773238759526b2c1b5a670ce5b601bb1 ""
+  "d:/Desktop/Project II/src/digit_recognition_fnn/formula/backpropagation.tex" 1779266464 23772 773238759526b2c1b5a670ce5b601bb1 ""
   (generated)
   "backpropagation.aux"
   "backpropagation.log"
