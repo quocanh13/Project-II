@@ -86,7 +86,7 @@ function ResultLandmarkImage() {
     useEffect(() => {
         if (canvasRef.current != null) {
             if(imageURL != null) {
-                drawLandmarkOnCanvas(canvasRef.current, imageURL, landmarkResult?.landmark, radius)
+                drawLandmarkOnCanvas(canvasRef.current, imageURL, undefined, undefined, landmarkResult?.landmark, radius)
             }
         }
     }, [resultImageURL, landmarkResult, radius]);

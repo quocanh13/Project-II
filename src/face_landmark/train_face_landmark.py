@@ -41,9 +41,14 @@ def train_face_landmark(
     if(load_state):
         model.load_state(device=device)
         
+    module = model
+    if tc.cuda.device_count() > 1:
+        model = nn.DataParallel(model)
+        module = model.module
+        
     criterion = nn.SmoothL1Loss()
     optimizer = tc.optim.Adam(
-        model.parameters(),
+        module.parameters(),
         lr=lr
     )
     dataset = CelebADataset(start=start, end=end)
@@ -64,10 +69,11 @@ def train_face_landmark(
             image = image.to(device)
             landmark = landmark.to(device)
             optimizer.zero_grad(set_to_none=True)
-
+            
             res = model(image)
             loss: tc.Tensor = criterion(res, landmark)
-            loss.backward()
+            loss.backward()           
+
             cur_batch_size = image.size(0)
             avg_loss += loss.item()*cur_batch_size
             total_size += cur_batch_size
@@ -75,7 +81,7 @@ def train_face_landmark(
             optimizer.step()
         end_time = datetime.now()
         print(f"Epoch: {ep} -- Time : {end_time - start_time} -- Loss : {avg_loss / total_size}", end="")
-        model.save_state()
+        module.save_state()
         print(" -- Saved State")
         
 

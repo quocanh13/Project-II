@@ -67,7 +67,7 @@ export const useFaceVerificationStore = create<FaceVerificationStore>((set, get)
         set({ faceDetectionConfig })
     },
 
-    faceLandmarkConfig: {backbone: "resnet18"},
+    faceLandmarkConfig: {backbone: "resnet34"},
     setFaceLandmarkConfig: (faceLandmarkConfig: FaceLandmarkConfig) => {
         set({ faceLandmarkConfig})
     },

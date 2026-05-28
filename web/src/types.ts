@@ -44,7 +44,8 @@ export type VerificationResult = {
     frontal: boolean,
     ok: boolean,
     distance : number,
-    percents: number
+    percents: number,
+    landmark: number[]
 }
 
 export type FaceDetectionBackbone = typeof FACE_DETECTION_BACKBONE[number];

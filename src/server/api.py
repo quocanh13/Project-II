@@ -106,7 +106,7 @@ def sample_face_api():
     image = Image.open(io.BytesIO(image.read()))
     image = image.convert("RGB")
     res = sample_face(image, model_config["face_detection"], model_config["face_landmark"])
-    detection, frontal, image = res
+    detection, landmark, frontal, image = res
     
     ok = False
     if(image != None):
@@ -115,7 +115,7 @@ def sample_face_api():
     
     return jsonify({
         "error" : False,
-        "result" : {"detection" : detection, "frontal" : frontal, "ok" : ok}
+        "result" : {"detection" : detection, "frontal" : frontal, "ok" : ok, "landmark" : landmark}
     })
     
 @api.route('/api/verify_face', methods=['POST'])
@@ -137,7 +137,7 @@ def verify_face_api():
     verify_image = Image.open(io.BytesIO(verify_image.read()))
     verify_image = verify_image.convert("RGB")
     res = verify_face(sample_image, verify_image, model_config["face_detection"], model_config["face_landmark"], model_config["face_embedder"])
-    detection, frontal, distance, percent, ok = res
+    detection, landmark, frontal, distance, percent, ok = res
     
     return jsonify({
         "error" : False,
@@ -146,6 +146,7 @@ def verify_face_api():
             "frontal" : frontal, 
             "distance" : distance,
             "ok" : ok, 
-            "percent" : percent
+            "percent" : percent,
+            "landmark" : landmark
         }
     })

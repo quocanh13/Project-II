@@ -61,14 +61,14 @@ def sample_face(
     image: Image.Image,
     face_detection_config: dict,
     face_landmark_config: dict,
-) -> tuple[list[dict], bool, Image.Image | None]:
+) -> tuple[list[dict], list[int], bool, Image.Image | None]:
     face_detection_config = FaceDetectionConfig(config=face_detection_config)
     face_landmark_config = FaceLandmarkConfig(config=face_landmark_config)
     
     model = face_verification_factory.get(face_detection_config, face_landmark_config)
-    detection, frontal, sample_image = model.sample(sample_image=image)
+    detection, landmark, frontal, sample_image = model.sample(sample_image=image)
 
-    return detection, frontal, sample_image
+    return detection, landmark, frontal, sample_image
 
 
 def verify_face(
@@ -77,14 +77,16 @@ def verify_face(
     face_detection_config: dict,
     face_landmark_config: dict,
     face_embedder_config: dict
-) -> tuple[list[tuple[list[dict], bool]], float, bool]:
+) -> tuple[list[tuple[list[dict], bool]], list[int], float, bool]:
     face_detection_config = FaceDetectionConfig(config=face_detection_config)
     face_landmark_config = FaceLandmarkConfig(config=face_landmark_config)
     face_embedder_config = FaceEmbedderConfig(config=face_embedder_config)
 
     model = face_verification_factory.get(face_detection_config, face_landmark_config, face_embedder_config)
     
-    [res_1, (detection, frontal)], distance = model.verify(sample_image, verify_image)
+    [res_1, (detection, landmark, frontal)], distance = model.verify(sample_image, verify_image)
+    # verify_image.show()
+    # FaceLandmark.show_landmark(verify_image, landmark=landmark)
     percent = 1 / (1 + math.exp(9*(distance - 1)))
     ok = True if distance < 0.95 else False
-    return detection, frontal, distance, percent, ok
+    return detection, landmark, frontal, distance, percent, ok

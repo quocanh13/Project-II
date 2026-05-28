@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 import { useFaceVerificationStore } from "../store/faceVerificationStore";
 import type { FaceDetectionAlgorithm, FaceDetectionBackbone, FaceDetectionConfig, FaceDetectionDataset, FaceEmbedderBackbone, FaceLandmarkBackbone, FaceLandmarkConfig } from "../types";
 import "../styles/FaceVerification.css";
-import { drawBboxesOnCanvas } from "../utils/image";
+import { drawBboxesOnCanvas, drawLandmarkOnCanvas } from "../utils/image";
 import { sampleFace as sampleFaceAPI, verifyFace as verifyFaceAPI } from "../api/faceVerificationAPI";
 import { useToastStore } from "../store/layoutStore";
 
@@ -85,12 +85,18 @@ export function FaceCapture() {
     useEffect(()=>{
         const bbox = verificationResult?.detection.map((v)=>v.bbox)
         const color = verificationResult?.ok? "green" : "red" 
-        if(overlayCanvasRef.current != null)
+        if(overlayCanvasRef.current != null){
             drawBboxesOnCanvas(
                 overlayCanvasRef.current, undefined, 
                 videoRef.current?.videoWidth, videoRef.current?.videoHeight, 
                 bbox, -1, 3, color
             )
+            drawLandmarkOnCanvas(
+                overlayCanvasRef.current, undefined, 
+                videoRef.current?.videoWidth, videoRef.current?.videoHeight,
+                verificationResult?.landmark
+            )
+        }
     }, [verificationResult])
 
     function captureVideo(){
@@ -114,7 +120,7 @@ export function FaceCapture() {
     useEffect(()=>{
         const startCamera = async () => {
             try {
-                const stream = await navigator.mediaDevices.getUserMedia({video : true, audio: false});
+                const stream = await navigator.mediaDevices.getUserMedia({video : {width: 1920, height: 1080}, audio: false});
                 if (videoRef.current) {
                     videoRef.current.srcObject = stream;
                     videoRef.current.onloadedmetadata = () => {

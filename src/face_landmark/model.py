@@ -20,6 +20,7 @@ class BackboneResnet18(Backbone):
         module = torchvision.models.resnet18(weights=torchvision.models.ResNet18_Weights.IMAGENET1K_V1)
         self.module = nn.Sequential(*list(module.children())[:-1])
         self.module.requires_grad_(False)
+        self.module[5].requires_grad_(True)
         self.module[6].requires_grad_(True)
         self.module[7].requires_grad_(True)
         self.out_channels = 512
@@ -71,23 +72,10 @@ class FaceLandmark(nn.Module):
         X = self.backbone(X)
         X = self.linear(X)
         return X
-    
-    def _eval_forward(self, image: Image.Image) -> list[int]:
-        w, h = image.size
-        image: tc.Tensor = self.transformer(image)
-        image = image.unsqueeze(0)
-        landmark = self._training_forward(image)[0]
-        landmark[[0, 2, 4, 6, 8]] *= w 
-        landmark[[1, 3, 5, 7, 9]] *= h
-        return landmark.round().int().tolist()
-        
 
     def forward(self, X: tc.Tensor | Image.Image) -> tc.Tensor | list[int]:
-        if(self.training):
-            return self._training_forward(X)
-        else:
-            return self._eval_forward(X)
-    
+        return self._training_forward(X)
+
     def detect(self, image: Image.Image) -> list[int]:
         self.eval()
         w, h = image.size

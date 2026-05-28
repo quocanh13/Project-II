@@ -30,7 +30,9 @@ def test_face_landmark(
     model = FaceLandmark(backbone=backbone)
     model.to(device=device)
     model.load_state(device=device)
-        
+    if tc.cuda.device_count() > 1:
+        model = nn.DataParallel(model)
+    model.eval()
     criterion = nn.SmoothL1Loss()
     dataset = CelebADataset(start=start, end=end)
     batches = DataLoader(

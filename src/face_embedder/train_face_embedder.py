@@ -2,7 +2,6 @@ import argparse
 import torch as tc
 import torch.nn as nn
 import torch.optim as optim
-import torch.multiprocessing as mp
 from typing import Callable
 from datetime import datetime
 from torch.utils.data import DataLoader
